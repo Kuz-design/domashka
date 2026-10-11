@@ -1,0 +1,614 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F4F1FF">
+<title>Домашка з Совою</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+:root{--bg:#F4F1FF;--ink:#1E1B3A;--mut:#5F5B85;--ac:#5B3FD9;--ac2:#E3DBFF;--ok:#D9F8E6;--warn:#FFF3CC}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:Nunito,system-ui,Arial,sans-serif;color:var(--ink);background:#E6E0FA;-webkit-tap-highlight-color:transparent}
+#app{max-width:480px;margin:0 auto;min-height:100dvh;background:var(--bg);position:relative;padding-bottom:calc(88px + env(safe-area-inset-bottom))}
+.view{display:none;padding:calc(14px + env(safe-area-inset-top)) 16px 24px}
+.view.on{display:block}
+button,select,input{font:inherit;color:inherit}
+button{cursor:pointer}
+h1,h2,h3,h4,p{margin:0}
+.btn{border:0;background:var(--ac);color:#fff;font-weight:900;font-size:17px;border-radius:999px;min-height:52px;padding:0 24px;display:inline-flex;align-items:center;justify-content:center;gap:10px;width:100%}
+.btn.o{background:#fff;color:var(--ac);border:3px solid var(--ac)}
+.btn.s{min-height:44px;font-size:15px;width:auto;padding:0 18px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.brand{display:flex;align-items:center;gap:8px;font-weight:900;font-size:20px}
+.pill{background:#FFE9A8;border-radius:999px;padding:6px 12px;font-weight:900;font-size:14px}
+.hero{display:flex;align-items:center;gap:8px;margin:4px 0 12px}
+.hero h1{flex:1;font-size:28px;line-height:1.12;font-weight:900}
+.card{background:#fff;border-radius:24px;padding:16px}
+.drop{border:3px dashed #B7A6FF;border-radius:28px;background:#fff;padding:18px 14px;display:flex;flex-direction:column;gap:10px}
+.hint{font-weight:600;font-size:14px;color:var(--mut);text-align:center}
+.thumbs{display:flex;gap:8px;flex-wrap:wrap}
+.th{position:relative;width:72px;height:72px;border-radius:14px;background:var(--ac2);overflow:hidden;display:flex;align-items:center;justify-content:center;font-weight:900;color:var(--ac)}
+.th img{width:100%;height:100%;object-fit:cover}
+.th button{position:absolute;top:2px;right:2px;width:28px;height:28px;border-radius:50%;border:0;background:rgba(30,27,58,.8);color:#fff;font-weight:900;line-height:1;padding:0}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:4px 16px 8px;margin:0 -16px;scrollbar-width:none;scroll-snap-type:x proximity}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;min-height:44px;border:0;border-radius:999px;background:#fff;padding:0 18px;font-weight:800;white-space:nowrap;scroll-snap-align:center}
+.chip.on{background:var(--ac);color:#fff}
+.sect{font-weight:900;font-size:13px;color:var(--mut);letter-spacing:.04em;text-transform:uppercase;margin:16px 0 6px}
+.banner{background:var(--warn);border-radius:18px;padding:12px 14px;font-weight:700;font-size:15px;display:flex;gap:10px;align-items:center;justify-content:space-between;margin-bottom:12px}
+.err{background:#FFD9DF;border-radius:18px;padding:12px 14px;font-weight:700;font-size:15px;margin-top:12px}
+#nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#fff;border-radius:24px 24px 0 0;display:flex;justify-content:space-around;padding:6px 8px calc(6px + env(safe-area-inset-bottom));box-shadow:0 -4px 16px rgba(30,27,58,.08);z-index:20}
+#nav button{border:0;background:none;min-height:56px;min-width:72px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-weight:800;font-size:13px;color:var(--mut)}
+#nav button.on{color:var(--ac)}
+.rhead{position:sticky;top:0;z-index:10;background:var(--bg);margin:calc(-14px - env(safe-area-inset-top)) -16px 0;padding:calc(10px + env(safe-area-inset-top)) 16px 4px}
+.back{border:0;background:#fff;border-radius:999px;min-height:44px;padding:0 16px 0 10px;font-weight:900;display:inline-flex;align-items:center;gap:6px;color:var(--ac)}
+.meta{font-weight:600;font-size:14px;color:var(--mut);margin:8px 0 2px}
+.item h2{font-size:24px;font-weight:900}
+.tag{display:inline-block;background:var(--ac2);color:var(--ac);border-radius:999px;padding:4px 12px;font-weight:800;font-size:13px;margin:6px 6px 0 0}
+.tag.w{background:var(--warn);color:#7A5200}
+.quote{background:#F4F1FF;border-radius:16px;padding:12px 14px;font-weight:700;line-height:1.45;white-space:pre-wrap}
+.task{margin-top:12px}
+.label{font-weight:900;font-size:15px;color:var(--ac);margin-bottom:6px}
+.src{background:#F4F1FF;border-radius:16px;padding:14px;font-weight:800;font-size:19px;line-height:1.9}
+.frag.m{border-radius:8px;padding:2px 3px;border-bottom:3px solid transparent}
+.m-subject{background:#FFE08A;border-color:#E5A800!important}
+.m-predicate{background:#B7EBC8;border-color:#2FA35F!important}
+.m-object{background:#FFC6D6;border-color:#E0527E!important}
+.m-attribute{background:#BCDBFF;border-color:#3C86E0!important}
+.m-adverbial{background:#DCC9FF;border-color:#8656E8!important}
+.m-highlight{background:#FFE08A;font-weight:900}
+.m-correct{background:#B8F0CB}
+.m-wrong{background:#FFC2C2;text-decoration:line-through}
+.focus .frag.m:not(.hl){background:none;border-color:transparent!important;opacity:.55;text-decoration:none}
+.focus .frag.hl{outline:3px solid var(--ac);outline-offset:1px}
+.leg{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.leg span{border-radius:999px;padding:3px 10px;font-weight:800;font-size:12px}
+.steps{list-style:none;padding:0;margin:10px 0 0;display:flex;flex-direction:column;gap:8px}
+.step{width:100%;text-align:left;border:0;background:var(--warn);border-radius:16px;padding:12px 14px;display:flex;gap:10px;font-weight:600;line-height:1.4;min-height:44px}
+.step b{flex:none;width:26px;height:26px;border-radius:50%;background:#FFC93C;display:flex;align-items:center;justify-content:center;font-size:14px}
+.step.on{background:#FFE9A8;outline:3px solid var(--ac)}
+.ans{background:var(--ok);border-radius:18px;padding:14px 16px;font-weight:900;font-size:18px;margin-top:12px;line-height:1.4}
+.why{background:var(--ac2);border-radius:18px;padding:14px 16px;font-weight:600;line-height:1.5;margin-top:10px}
+.why b{display:block;margin-bottom:4px}
+.sum{background:#fff;border:3px solid var(--ac2);border-radius:18px;padding:12px 14px;font-weight:800;margin-top:14px;line-height:1.45}
+.arg{border-left:0;background:#fff;border-radius:16px;padding:12px 14px;margin-top:8px;box-shadow:0 0 0 2px var(--ac2)}
+.arg q{display:block;font-style:italic;font-weight:600;margin-top:4px;line-height:1.45;quotes:none}
+.arg small{display:block;color:var(--mut);font-weight:700;margin-top:4px}
+.ver{color:#7A5200;background:var(--warn);border-radius:8px;padding:1px 8px;font-weight:800;font-size:12px}
+details{background:#fff;border-radius:18px;padding:12px 14px;margin-top:12px}
+summary{font-weight:900;min-height:28px;cursor:pointer}
+details p{margin-top:8px;font-weight:600;line-height:1.45}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+#extra{margin-top:12px;background:#fff;border-radius:18px;padding:14px 16px;font-weight:600;line-height:1.5;display:none}
+#extra p+p{margin-top:8px}
+.hrow{width:100%;text-align:left;border:0;background:#fff;border-radius:18px;padding:14px 16px;margin-top:10px;display:flex;flex-direction:column;gap:2px;min-height:44px}
+.hrow b{font-weight:900}.hrow span{font-size:13px;font-weight:700;color:var(--mut)}
+label{display:block;font-weight:800;margin:14px 0 6px}
+input[type=password],input[type=text],select{width:100%;min-height:52px;border-radius:16px;border:3px solid var(--ac2);background:#fff;padding:0 14px}
+input:focus,select:focus{outline:3px solid var(--ac);border-color:transparent}
+#load{position:fixed;inset:0;background:rgba(244,241,255,.96);z-index:50;display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;text-align:center}
+#load.on{display:flex}
+#load .o{animation:bob 1.2s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-12px) rotate(-4deg)}}
+#load p{font-weight:900;font-size:20px}
+#toast{position:fixed;left:50%;bottom:calc(100px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink);color:#fff;border-radius:999px;padding:12px 20px;font-weight:800;z-index:60;display:none;max-width:90%;text-align:center}
+.empty{text-align:center;padding:24px 8px;font-weight:700;color:var(--mut)}
+#nav-profile .ic{position:relative;display:inline-flex}
+#nav-profile .bd{position:absolute;right:-9px;top:-5px;width:17px;height:17px;border-radius:50%;background:#2FA35F;border:2px solid #fff;display:none;align-items:center;justify-content:center}
+#nav #nav-profile.ok .bd{display:flex}
+#nav #nav-profile.need{color:#D9660F}
+#nav-profile.need .ic::before{content:"";position:absolute;inset:-7px;border-radius:50%;border:3px solid #FF8A3D;animation:ping 1.6s ease-out infinite}
+#nav-profile.need .ic svg{animation:wig 2.6s ease-in-out infinite}
+@keyframes ping{0%{transform:scale(.7);opacity:1}100%{transform:scale(1.55);opacity:0}}
+@keyframes wig{0%,80%,100%{transform:rotate(0)}85%{transform:rotate(-12deg)}92%{transform:rotate(12deg)}}
+.shake{animation:shk .5s}
+@keyframes shk{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+@media (prefers-reduced-motion:reduce){#load .o,#nav-profile.need .ic svg,.shake{animation:none}#nav-profile.need .ic::before{animation:none;opacity:.8}}
+[hidden]{display:none!important}
+.bar{height:16px;border-radius:999px;background:var(--ac2);overflow:hidden;margin-top:12px}
+.bar i{display:block;height:100%;width:0;background:var(--ac);border-radius:999px;transition:width .4s}
+.bar.warn i{background:#E5A800}
+.bar.full i{background:#E0527E}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+</style>
+</head>
+<body>
+<div id="app">
+
+<main id="v-login" class="view">
+  <div style="text-align:center;padding-top:36px">
+    <span data-owl="120"></span>
+    <h1 style="font-size:30px;font-weight:900;margin:12px 0 8px">Домашка з Совою</h1>
+    <p class="hint">Увійди через Google, щоб Софі допомагала виконувати домашні завдання.</p>
+    <div id="g-btn" style="display:flex;justify-content:center;margin:24px 0 8px;min-height:44px"></div>
+    <div class="err" id="login-err" hidden role="alert"></div>
+    <p class="hint" style="margin-top:20px">Ми зберігаємо лише твоє ім’я, e-mail і лічильник використаної квоти. Фото завдань надсилаються до Google Gemini для обробки й не зберігаються на нашому сервері.</p>
+  </div>
+</main>
+
+<main id="v-home" class="view">
+  <div class="top"><div class="brand"><span data-owl="36"></span>Домашка з Совою</div><div class="pill" id="streak" hidden></div></div>
+  <div class="hero"><h1>Що робимо сьогодні?</h1><span data-owl="88"></span></div>
+  <div class="drop">
+    <button class="btn" id="b-cam"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Сфотографувати завдання</button>
+    <button class="btn o" id="b-file">Завантажити з галереї</button>
+    <div class="hint">JPG, PNG або PDF · до 8 файлів (кілька сторінок)</div>
+    <div class="thumbs" id="thumbs"></div>
+  </div>
+  <input type="file" id="i-cam" accept="image/*" capture="environment" hidden>
+  <input type="file" id="i-file" accept="image/*,application/pdf" multiple hidden>
+  <div class="sect">Предмет</div>
+  <div class="chips" id="subjects" role="group" aria-label="Предмет"></div>
+  <div class="banner" id="q-banner" hidden role="status" style="margin-top:14px;margin-bottom:0"><span id="q-banner-t"></span><button class="btn s" data-go="profile">Профіль</button></div>
+  <div style="margin-top:14px"><button class="btn" id="b-go" disabled>Виконати й пояснити</button></div>
+  <div class="err" id="err" hidden role="alert"></div>
+</main>
+
+<main id="v-result" class="view">
+  <div class="rhead">
+    <button class="back" id="b-back" aria-label="Назад до завантаження завдань"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>Нова сторінка</button>
+    <div class="meta" id="r-meta"></div>
+    <div class="chips" id="r-chips" role="tablist" aria-label="Завдання зі сторінки"></div>
+  </div>
+  <div id="r-note"></div>
+  <div class="item" id="r-item"></div>
+</main>
+
+<main id="v-history" class="view">
+  <div class="top"><div class="brand"><span data-owl="36"></span>Історія</div></div>
+  <div class="chips" id="h-chips" role="group" aria-label="Фільтр за предметом"></div>
+  <div id="h-list"></div>
+  <div class="acts" style="margin-top:16px">
+    <button class="btn o s" id="b-exp">Вивантажити</button>
+    <button class="btn o s" id="b-imp">Довантажити</button>
+    <button class="btn o s" id="b-clear">Очистити</button>
+  </div>
+  <input type="file" id="i-imp" accept="application/json,.json" hidden>
+</main>
+
+<main id="v-profile" class="view">
+  <div class="top"><div class="brand"><span data-owl="36"></span>Профіль</div></div>
+  <div class="card">
+    <div style="display:flex;gap:12px;align-items:center">
+      <img id="p-pic" alt="" width="56" height="56" referrerpolicy="no-referrer" style="border-radius:50%;flex:none" hidden>
+      <div style="min-width:0"><h3 id="p-name" style="overflow-wrap:anywhere"></h3><div class="hint" id="p-mail" style="text-align:left;overflow-wrap:anywhere"></div></div>
+    </div>
+    <label for="grade">Клас</label>
+    <select id="grade"><option value="">Не вказано</option></select>
+  </div>
+  <div class="card" style="margin-top:12px">
+    <h3>Квота</h3>
+    <div class="bar" id="p-bar" role="progressbar" aria-label="Використання квоти" aria-valuemin="0" aria-valuemax="100"><i></i></div>
+    <div id="p-tok" style="font-weight:800;margin-top:8px"></div>
+    <div class="hint" id="p-req" style="text-align:left;margin-top:4px"></div>
+    <div class="banner" id="p-warn" hidden style="margin:12px 0 0"></div>
+    <div class="acts"><button class="btn" id="p-pay">Оновити підписку</button></div>
+    <p class="hint" style="text-align:left;margin-top:12px">Токени витрачаються на фото, запит і відповідь ШІ: чим більше сторінок і складніші завдання, тим більше токенів.</p>
+  </div>
+  <div class="acts" style="margin-top:12px"><button class="btn o" id="p-out">Вийти з акаунта</button></div>
+</main>
+
+<nav id="nav" aria-label="Головна навігація">
+  <button data-go="home" class="on"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11l8-7 8 7v9H4z"/></svg>Головна</button>
+  <button data-go="history"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/></svg>Історія</button>
+  <button data-go="profile" id="nav-profile"><span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c1-4 4-6 8-6s7 2 8 6"/></svg><span class="bd"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></span></span>Профіль</button>
+</nav>
+
+<div id="load" role="status" aria-live="polite"><span class="o" data-owl="120"></span><p id="load-t">Софі читає сторінку…</p><div class="hint">Це може тривати до хвилини</div></div>
+<div id="toast" role="status"></div>
+</div>
+
+<script>
+/* ---------- налаштування (заповніть перед публікацією) ---------- */
+const CONFIG={
+  API_BASE:'https://domashka-api.kuzdesign.workers.dev/', // адреса вашого Worker, без слеша в кінці
+  GOOGLE_CLIENT_ID:'926520206955-tpddpurpvqnksnsm4rdlnnncj0oq06j7.apps.googleusercontent.com',
+  PAY_URL:'',   // посилання на оплату (LiqPay, WayForPay, Monobank тощо)
+  CONTACT:'kuzzzdesign@gmail.com'    // e-mail або Telegram для питань щодо оплати
+};
+const CONFIGURED=!/YOUR-/.test(CONFIG.API_BASE+CONFIG.GOOGLE_CLIENT_ID);
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const owl=s=>`<svg width="${s}" height="${s}" viewBox="0 0 120 120" role="img" aria-label="Сова Софі"><ellipse cx="60" cy="70" rx="42" ry="42" fill="#7C5CFF"/><ellipse cx="60" cy="82" rx="26" ry="26" fill="#EDE7FF"/><circle cx="42" cy="56" r="16" fill="#fff"/><circle cx="78" cy="56" r="16" fill="#fff"/><circle cx="45" cy="57" r="8" fill="#1E1B3A"/><circle cx="75" cy="57" r="8" fill="#1E1B3A"/><circle cx="47" cy="54" r="2.5" fill="#fff"/><circle cx="77" cy="54" r="2.5" fill="#fff"/><path d="M54 66h12l-6 11z" fill="#FFC93C"/><path d="M26 32 60 16l34 16-34 14z" fill="#FFC93C"/><path d="M90 34v14" stroke="#FFC93C" stroke-width="3"/></svg>`;
+$$('[data-owl]').forEach(e=>e.innerHTML=owl(e.dataset.owl));
+
+const SUBJECTS=[['uk','Українська'],['math','Математика'],['en','Англійська'],['phys','Фізика'],['chem','Хімія'],['bio','Біологія'],['hist','Історія']];
+const SUBJ_NAME={uk:'Українська мова та література',math:'Математика',en:'Англійська мова',phys:'Фізика',chem:'Хімія',bio:'Біологія',hist:'Історія'};
+const st={subject:'uk',files:[],result:null,idx:0,busy:false};
+
+/* ---------- акаунт, квота, API ---------- */
+let AUTH={token:LS.get('session','')},ME=null;
+const uid=()=>ME?ME.id:LS.get('uid','');
+const UL={get:(k,d)=>LS.get(k+':'+uid(),d),set:(k,v)=>LS.set(k+':'+uid(),v)}; // дані окремо для кожного акаунта на пристрої
+const fmt=n=>Number(n||0).toLocaleString('uk-UA');
+const usage=()=>ME&&ME.usage?ME.usage:null;
+const exhausted=()=>{const u=usage();return !!u&&u.tokens_used>=u.tokens_quota};
+const pct=()=>{const u=usage();return u&&u.tokens_quota>0?Math.min(100,Math.round(u.tokens_used/u.tokens_quota*100)):(u?100:0)};
+async function api(path,{method='GET',body}={}){
+  const h={};if(AUTH.token)h.Authorization='Bearer '+AUTH.token;if(body)h['Content-Type']='application/json';
+  let r;try{r=await fetch(CONFIG.API_BASE+path,{method,headers:h,body:body?JSON.stringify(body):undefined})}catch(e){throw{code:'net'}}
+  const j=await r.json().catch(()=>({}));
+  if(r.status===401&&AUTH.token&&path!=='/api/auth/google')logout(true);
+  if(!r.ok){if(j.usage&&ME&&r.status!==401){ME.usage=j.usage;paintQuota()}throw{code:r.status,err:j.error,msg:j.message}}
+  return j;
+}
+function setMe(j){ME=j;LS.set('uid',j.id);UL.set('grade',j.grade==null?'':String(j.grade));paintQuota()}
+async function refreshMe(){if(!AUTH.token)return;try{setMe(await api('/api/me'))}catch(e){}}
+function paintQuota(){navKey();syncGo();paintBanner();if($('#v-profile').classList.contains('on'))renderProfile()}
+function paintBanner(){
+  const b=$('#q-banner'),p=pct();
+  if(!usage()||p<80){b.hidden=true;return}
+  $('#q-banner-t').textContent=p>=100?'Квоту вичерпано. Оновіть підписку, щоб продовжити.':'Квота майже вичерпана: використано '+p+'%.';
+  b.hidden=false;
+}
+function syncGo(){$('#b-go').disabled=!st.files.length||exhausted()}
+function migrateLegacy(){ // перенесення історії з версії без входу + видалення старого ключа з браузера
+  ['hist','days'].forEach(k=>{const old=LS.get(k,null);if(old!==null&&LS.get(k+':'+uid(),null)===null)LS.set(k+':'+uid(),old);try{localStorage.removeItem(k)}catch(e){}});
+  try{localStorage.removeItem('key');localStorage.removeItem('grade')}catch(e){}
+}
+function logout(expired){
+  AUTH.token='';ME=null;LS.set('session','');
+  try{google.accounts.id.disableAutoSelect()}catch(e){}
+  clearFiles();st.result=null;show('login');
+  const e=$('#login-err');e.textContent=expired?'Сесія завершилась. Увійди знову.':'';e.hidden=!expired;
+}
+async function onCred(resp){
+  const err=$('#login-err');err.hidden=true;
+  try{
+    const j=await api('/api/auth/google',{method:'POST',body:{credential:resp.credential}});
+    const legacyGrade=LS.get('grade','');
+    AUTH.token=j.token;LS.set('session',j.token);ME=j.me;LS.set('uid',ME.id);migrateLegacy();setMe(ME);
+    if(ME.grade==null&&legacyGrade)api('/api/me',{method:'POST',body:{grade:+legacyGrade}}).then(setMe).catch(()=>{});
+    show('home');
+  }catch(e){err.textContent=(e&&e.code===401)?'Не вдалося підтвердити вхід через Google. Спробуй ще раз.':errText(e);err.hidden=false}
+}
+
+
+/* ---------- navigation ---------- */
+function show(v){
+  if(!AUTH.token)v='login';
+  $$('.view').forEach(x=>x.classList.toggle('on',x.id==='v-'+v));
+  $$('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.go===v));
+  $('#nav').style.display=(v==='result'||v==='login')?'none':'flex';
+  document.body.style.paddingBottom='0';
+  window.scrollTo(0,0);
+  navKey();
+  if(v==='home'){refreshHome();refreshMe()}
+  if(v==='history')renderHistory();
+  if(v==='profile'){renderProfile();refreshMe()}
+}
+document.addEventListener('click',e=>{const g=e.target.closest('[data-go]');if(g)show(g.dataset.go)});
+let tt;function toast(m){const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(tt);tt=setTimeout(()=>t.style.display='none',2800)}
+
+/* ---------- home ---------- */
+function streak(){const a=new Set(UL.get('days',[]));let n=0;const d=new Date();while(a.has(d.toISOString().slice(0,10))){n++;d.setDate(d.getDate()-1)}return n}
+function touchDay(){const d=new Date().toISOString().slice(0,10);const a=UL.get('days',[]);if(!a.includes(d)){a.push(d);UL.set('days',a.slice(-60))}}
+function navKey(){const b=$('#nav-profile'),bad=exhausted();b.classList.toggle('ok',!!ME&&!bad);b.classList.toggle('need',bad);b.setAttribute('aria-label',bad?'Профіль, квоту вичерпано':'Профіль')}
+function refreshHome(){
+  const n=streak();const s=$('#streak');s.hidden=!n;s.textContent=n+' дн. підряд';
+  syncGo();paintBanner();
+}
+function renderSubjects(){
+  $('#subjects').innerHTML=SUBJECTS.map(([k,l])=>`<button class="chip ${st.subject===k?'on':''}" data-sub="${k}" aria-pressed="${st.subject===k}">${l}</button>`).join('');
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-sub]');if(b){st.subject=b.dataset.sub;renderSubjects()}});
+renderSubjects();
+
+const b64=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result.split(',')[1]);r.onerror=rej;r.readAsDataURL(f)});
+function shrink(f){return new Promise((res,rej)=>{
+  const u=URL.createObjectURL(f),im=new Image();
+  im.onload=()=>{
+    const M=1536,k=Math.min(1,M/Math.max(im.width,im.height));
+    const c=document.createElement('canvas');c.width=Math.max(1,Math.round(im.width*k));c.height=Math.max(1,Math.round(im.height*k));
+    const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);
+    const data=c.toDataURL('image/jpeg',.8).split(',')[1];
+    const q=160/Math.max(c.width,c.height),t=document.createElement('canvas');t.width=Math.max(1,Math.round(c.width*q));t.height=Math.max(1,Math.round(c.height*q));
+    t.getContext('2d').drawImage(c,0,0,t.width,t.height);
+    URL.revokeObjectURL(u);res({mime:'image/jpeg',data,prev:t.toDataURL('image/jpeg',.7)})};
+  im.onerror=()=>{URL.revokeObjectURL(u);rej(new Error('img'))};im.src=u})}
+function cyrb53(s,seed=0){let h1=0xdeadbeef^seed,h2=0x41c6ce57^seed;for(let i=0;i<s.length;i++){const c=s.charCodeAt(i);h1=Math.imul(h1^c,2654435761);h2=Math.imul(h2^c,1597334677)}h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);return 4294967296*(2097151&h2)+(h1>>>0)}
+function clearFiles(){st.files=[];renderThumbs()}
+async function addFiles(list){
+  for(const f of list){
+    if(st.files.length>=8){toast('Максимум 8 файлів');break}
+    try{
+      if(f.type==='application/pdf'){if(f.size>15e6){toast('PDF завеликий (>15 МБ)');continue}st.files.push({mime:f.type,data:await b64(f),name:f.name})}
+      else if(f.type.startsWith('image/'))st.files.push(await shrink(f));
+    }catch(e){toast('Не вдалося прочитати файл')}
+  }
+  renderThumbs();
+}
+function renderThumbs(){
+  $('#thumbs').innerHTML=st.files.map((f,i)=>`<div class="th">${f.prev?`<img src="${f.prev}" alt="Сторінка ${i+1}">`:'PDF'}<button data-rm="${i}" aria-label="Видалити файл ${i+1}">×</button></div>`).join('');
+  syncGo();
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-rm]');if(b){st.files.splice(+b.dataset.rm,1);renderThumbs()}});
+$('#b-cam').onclick=()=>$('#i-cam').click();
+$('#b-file').onclick=()=>$('#i-file').click();
+$('#i-cam').onchange=e=>{addFiles(e.target.files);e.target.value=''};
+$('#i-file').onchange=e=>{addFiles(e.target.files);e.target.value=''};
+
+/* ---------- prompts ---------- */
+const SAMPLE=`{"schema_version":"2.0","meta":{"title":"Домашнє завдання","grade":8,"topic":"Синтаксис і література","subject":"mixed"},"items":[{"id":"1","number":"Вправа 112","subject":"language","type":"exercise","topic":"Синтаксис: граматична основа речення","original_text":"Підкресліть граматичну основу в реченні: «Над лісом зійшло ясне сонце.»","confidence":"high","basis":[{"kind":"rule","title":"Підмет","text":"Підмет — головний член речення, що називає предмет, про який ідеться. Відповідає на питання хто? що?"}],"exercise":{"instruction":"Підкресліть граматичну основу.","tasks":[{"label":"Речення","source":"Над лісом зійшло ясне сонце.","steps":["Шукаємо присудок — слово, що називає дію: «зійшло».","Ставимо питання до підмета: що зійшло? — «сонце».","Решта слів — другорядні члени: «ясне» — означення, «над лісом» — обставина місця."],"parts":[{"text":"Над лісом","mark":"adverbial","step":3},{"text":" "},{"text":"зійшло","mark":"predicate","step":1},{"text":" "},{"text":"ясне","mark":"attribute","step":3},{"text":" "},{"text":"сонце","mark":"subject","step":2},{"text":"."}],"answer":"Граматична основа: сонце (підмет) зійшло (присудок).","why":"Граматична основа складається з підмета й присудка. «Сонце» відповідає на питання що?, тому це підмет. «Зійшло» називає дію підмета, тому це присудок.","rule":"Підмет; Присудок"}],"summary":"Граматична основа речення: сонце зійшло."}},{"id":"2","number":"Завдання 3","subject":"literature","type":"analysis","topic":"Т. Шевченко. «Заповіт»","original_text":"Визначте тему й основну думку вірша. Доведіть цитатами.","confidence":"high","basis":[{"kind":"fact","title":"Контекст","text":"Вірш написано в Переяславі 25 грудня 1845 року."}],"literature":{"work":{"title":"Заповіт","author":"Тарас Шевченко","genre":"громадянська лірика"},"answers":[{"question":"Яка тема вірша?","answer":"Прощання поета з життям і його заповідь народові.","arguments":[{"claim":"Поет просить поховати його в рідній землі.","evidence":"«Як умру, то поховайте / Мене на могилі…»","where":"1 строфа","verify":false}]}],"terms":[{"term":"Вірш-заповіт","definition":"Твір, у якому автор висловлює останню волю."}],"summary":"Тема: заповідь поета народові."}}]}`;
+
+function gradeLine(){const g=UL.get('grade','');return g?`\nКлас учня: ${g}. Підлаштуй мову й глибину пояснень під цей клас.`:''}
+const FORMAT=`ФОРМАТ ВІДПОВІДІ:
+• Лише ОДИН блок коду з мовою json (три зворотні лапки + json ... три зворотні лапки). Жодного тексту до чи після блоку.
+• JSON валідний: подвійні лапки, без коментарів, без коми після останнього елемента.
+• Не вигадуй інших полів, окрім показаних у зразку.`;
+function promptUK(){return `Ти — досвідчена вчителька української мови та літератури. На фото — сторінка з домашніми завданнями (підручник або зошит).
+
+ГОЛОВНЕ: ти не просто даєш відповіді, а ВИКОНУЄШ завдання й ОБҐРУНТОВУЄШ кожну відповідь.
+• Українська мова: спирайся на чинний «Український правопис» (редакція 2019 року) та програмні правила. Для кожної відповіді назви правило, коротко сформулюй його й покажи, як воно застосоване саме тут.
+• Українська література: спирайся на текст твору та перевірені факти (епізоди, образи, цитати, історико-літературний контекст, літературознавчі терміни).
+• НЕ вигадуй цитат, дат, імен і фактів. Цитуй лише тоді, коли певен у точності (короткі уривки, 1–4 рядки). Якщо не певен — переказуй своїми словами й став "verify": true. Якщо потрібного тексту твору немає на фото, спирайся на загальновідомий зміст і поясни це в "notes".
+• Пиши українською, зрозуміло для учня відповідного класу, без русизмів і калькування.
+
+ЩО РОБИТИ:
+1. Прочитай УСІ завдання на фото, нічого не пропускай. Збережи нумерацію й оригінальний текст ("number", "original_text").
+2. Для кожного завдання вкажи "subject": "language" або "literature" та "type": exercise (вправа з мови), analysis (аналіз/розбір твору чи вірша), question (питання за твором), essay (твір, відгук, план).
+3. Виконай завдання за структурою нижче.
+
+${FORMAT}
+
+ПОЛЯ ЗАВДАННЯ: id, number, subject, type, topic, original_text, confidence ("high" або "low"), notes (за потреби), basis[], а також:
+• для МОВИ — "exercise": {instruction, tasks:[{label, source, parts:[{text, mark, step}], steps:[...], answer, why, rule}], summary}
+  - tasks — кожен пункт вправи (слово, речення, рядок) окремо;
+  - source — вихідний текст; answer — виконана відповідь (слово зі вставленими літерами, речення з розділовими знаками тощо);
+  - parts — той самий текст, розбитий на фрагменти для підсвічування (разом, з пробілами, вони дають source). mark (необов'язково): subject, predicate, object, attribute, adverbial, highlight (важлива літера чи знак), correct, wrong. step — номер кроку з steps (з 1), на якому фрагмент підсвічується;
+  - steps — 2–6 коротких кроків міркування (бажано для розборів);
+  - why — ОБҐРУНТУВАННЯ: яке правило і чому саме така відповідь; rule — назва правила.
+• для ЛІТЕРАТУРИ — "literature": {work:{title, author, genre}, answers:[{question, answer, arguments:[{claim, evidence, where, verify}]}], outline:[...], essay:{title, paragraphs:[...]}, terms:[{term, definition}], summary}
+  - arguments: claim — теза; evidence — цитата або епізод; where — де в тексті, якщо відомо; verify — true, якщо не певен у точності.
+  - outline (план) та essay (твір) додавай лише тоді, коли їх вимагає завдання.
+• basis[] — на що спираєшся: {kind: "rule" | "source" | "fact" | "term", title, text}.
+
+Перевір кожну відповідь ще раз перед записом. Якщо фото нечітке — став "confidence": "low" і поясни в "notes".
+
+ЗРАЗОК СТРУКТУРИ (лише приклад формату; не копіюй його зміст, а виконай завдання з фото):
+\`\`\`json
+${SAMPLE}
+\`\`\`${gradeLine()}`}
+function promptGen(name){return `Ти — досвідчений вчитель предмета «${name}». На фото — сторінка з домашніми завданнями або тестом (підручник чи зошит).
+
+ГОЛОВНЕ: ти не просто даєш відповіді, а ВИКОНУЄШ кожне завдання й ОБҐРУНТОВУЄШ відповідь: назви правило, формулу, закон, теорему або факт і покажи, як їх застосовано саме тут.
+• НЕ вигадуй фактів, дат, імен і чисел. Якщо не певен — скажи про це в "notes" і став "confidence": "low".
+• Пиши українською (для англійської мови — пояснення українською, приклади англійською), зрозуміло для учня відповідного класу.
+• Формули записуй звичайним текстом з Unicode (наприклад 3/4 + 1/8 = 7/8, x², √9), без LaTeX.
+
+ЩО РОБИТИ:
+1. Прочитай УСІ завдання на фото, нічого не пропускай. Збережи нумерацію й оригінальний текст ("number", "original_text").
+2. Для кожного завдання став "subject": "other", "type": "exercise", а в "exercise" заповни tasks (кожен пункт, підпункт чи тестове питання окремо). Тестові питання: у "answer" вкажи правильний варіант і його текст.
+3. Для кожного пункту: label, source (умова), steps (2–6 коротких кроків розв'язання), answer (кінцева відповідь), why (ОБҐРУНТУВАННЯ: чому саме так), rule (назва правила/формули/закону). Поле parts можна не додавати.
+
+${FORMAT}
+
+ПОЛЯ ЗАВДАННЯ: id, number, subject, type, topic, original_text, confidence ("high" або "low"), notes (за потреби), basis[] ({kind: "rule" | "fact" | "term", title, text}), exercise {instruction, tasks:[{label, source, steps, answer, why, rule}], summary}.
+
+Перевір кожну відповідь ще раз перед записом. Якщо фото нечітке — став "confidence": "low" і поясни в "notes".
+
+ЗРАЗОК СТРУКТУРИ ПЕРШОГО ЕЛЕМЕНТА (лише формат; виконай завдання з фото):
+\`\`\`json
+{"schema_version":"2.0","meta":{"title":"Домашнє завдання","grade":5,"topic":"${name}","subject":"other"},"items":[{"id":"1","number":"Завдання 3","subject":"other","type":"exercise","topic":"Тема завдання","original_text":"Текст завдання","confidence":"high","basis":[{"kind":"rule","title":"Правило","text":"Формулювання"}],"exercise":{"instruction":"Умова","tasks":[{"label":"а)","source":"Умова пункту","steps":["Крок 1","Крок 2"],"answer":"Відповідь","why":"Чому саме так","rule":"Назва правила"}],"summary":"Коротко про результат"}}]}
+\`\`\`${gradeLine()}`}
+
+/* ---------- Gemini ---------- */
+async function gem(parts,json,kind){
+  const j=await api('/api/ai',{method:'POST',body:{parts,json:!!json,kind:kind||'extra'}});
+  if(j.usage&&ME){ME.usage=j.usage;paintQuota()}
+  if(!j.text||!j.text.trim())throw{code:'empty'};
+  return j.text;
+}
+function parseJ(t){
+  const m=t.match(/```json\s*([\s\S]*?)```/i);let s=m?m[1]:t;
+  const a=s.indexOf('{'),b=s.lastIndexOf('}');if(a<0||b<0)throw{code:'parse'};
+  try{return JSON.parse(s.slice(a,b+1))}catch(e){throw{code:'parse'}}
+}
+function errText(e){
+  const c=e&&e.code,k=e&&e.err;
+  if(c===402||k==='quota_exceeded')return'Квоту вичерпано. Оновіть підписку в розділі «Профіль», щоб продовжити.';
+  if(c===401)return'Сесія завершилась. Увійди знову.';
+  if(c===403)return'Доступ для цього акаунта призупинено. Напиши автору сервісу.';
+  if(k==='busy')return'Попередній запит ще виконується. Дочекайся результату.';
+  if(c===413)return'Файли завеликі. Зменш кількість сторінок або розмір PDF.';
+  if(c===400)return'Запит відхилено. Перевір якість фото й формат файлів.';
+  if(c===503||c===504||k==='upstream_busy')return'Сервіс ШІ зараз перевантажений. Спробуй за хвилину.';
+  if(c===429)return'Забагато запитів. Спробуй за хвилину.';
+  if(c==='parse')return'Софі повернула відповідь у неправильному форматі. Спробуй ще раз.';
+  if(c==='empty'||k==='empty')return'Порожня відповідь. Спробуй ще раз.';
+  return'Помилка зв’язку. Перевір інтернет.';
+}
+function showErr(el,e){
+  el.textContent=errText(e);
+  if(e&&(e.code===402||e.err==='quota_exceeded')){el.insertAdjacentHTML('beforeend','<div style="margin-top:10px"><button class="btn s" data-go="profile">Відкрити Профіль</button></div>');refreshMe()}
+  el.hidden=false;
+}
+
+/* ---------- solve ---------- */
+const MSGS=['Софі читає сторінку…','Розпізнаю завдання…','Виконую вправи…','Підбираю правила…','Перевіряю відповіді…'];
+let lt;
+function loading(on){const l=$('#load');l.classList.toggle('on',on);clearInterval(lt);if(on){let i=0;$('#load-t').textContent=MSGS[0];lt=setInterval(()=>{i=(i+1)%MSGS.length;$('#load-t').textContent=MSGS[i]},2600)}}
+async function solve(force){
+  if(st.busy||!st.files.length)return;
+  const err=$('#err');err.hidden=true;
+  if(!AUTH.token){show('login');return}
+  if(exhausted()){showErr(err,{code:402});return}
+  const sig=cyrb53(st.files.map(f=>cyrb53(f.data)).join('|')+'|'+st.subject).toString(36);
+  if(!force){const hit=histList().find(x=>x.sig===sig);if(hit){openHist(hit,true);toast('Цю сторінку вже виконано — відкрито з історії');return}}
+  st.busy=true;loading(true);
+  try{
+    const prompt=st.subject==='uk'?promptUK():promptGen(SUBJ_NAME[st.subject]);
+    const parts=[{text:prompt},...st.files.map(f=>({inline_data:{mime_type:f.mime,data:f.data}}))];
+    const data=parseJ(await gem(parts,true,'page'));
+    if(!Array.isArray(data.items)||!data.items.length)throw{code:'parse'};
+    st.result=data;st.idx=0;st.dupe=false;touchDay();
+    const h=histList().filter(x=>x.sig!==sig);
+    h.unshift({id:Date.now(),sig,title:(data.meta&&data.meta.title)||'Домашнє завдання',subject:SUBJECTS.find(x=>x[0]===st.subject)[1],ts:Date.now(),data});
+    saveHist(h);
+    clearFiles();
+    renderResult();show('result');
+  }catch(e){showErr(err,e)}
+  finally{st.busy=false;loading(false)}
+}
+$('#b-go').onclick=()=>solve(false);
+function openHist(x,dupe){st.result=x.data;st.idx=0;st.dupe=!!dupe;if(!dupe)clearFiles();renderResult();show('result')}
+document.addEventListener('click',e=>{if(e.target.closest('#b-redo')){st.dupe=false;show('home');solve(true)}});
+
+/* ---------- result ---------- */
+const MARKS={subject:['підмет','#FFE08A'],predicate:['присудок','#B7EBC8'],object:['додаток','#FFC6D6'],attribute:['означення','#BCDBFF'],adverbial:['обставина','#DCC9FF'],highlight:['важливо','#FFE08A'],correct:['правильно','#B8F0CB'],wrong:['помилка','#FFC2C2']};
+const KIND={rule:'Правило',source:'Джерело',fact:'Факт',term:'Термін'};
+const TYPE={exercise:'Вправа',analysis:'Аналіз',question:'Питання',essay:'Твір'};
+function renderResult(){
+  const d=st.result,items=d.items||[],m=d.meta||{};
+  $('#r-note').innerHTML=st.dupe?`<div class="why" style="margin:12px 0 0;background:var(--ok)"><b>Відкрито з історії</b>Цю сторінку вже було виконано, тому запит до ШІ не надсилався й квоту не витрачено.${st.files.length?'<div class="acts" style="margin-top:10px"><button class="btn o s" id="b-redo">Виконати заново</button></div>':''}</div>`:'';
+  $('#r-meta').textContent=[m.title,m.grade?m.grade+' клас':'',m.topic].filter(Boolean).join(' · ');
+  $('#r-chips').innerHTML=items.map((it,i)=>`<button class="chip ${i===st.idx?'on':''}" role="tab" aria-selected="${i===st.idx}" data-i="${i}">${esc(it.number||('№'+(i+1)))}</button>`).join('');
+  const act=$('#r-chips .on');if(act)act.scrollIntoView({inline:'center',block:'nearest'});
+  $('#r-item').innerHTML=renderItem(items[st.idx]||{});
+  window.scrollTo(0,0);
+}
+document.addEventListener('click',e=>{const b=e.target.closest('#r-chips [data-i]');if(b){st.idx=+b.dataset.i;renderResult()}});
+$('#b-back').onclick=()=>{clearFiles();st.dupe=false;show('home')};
+function renderTask(t){
+  const parts=Array.isArray(t.parts)&&t.parts.length?t.parts:null;
+  const src=parts?parts.map(p=>`<span class="frag${p.mark?' m m-'+esc(p.mark):''}"${p.step?` data-s="${esc(p.step)}"`:''}>${esc(p.text)}</span>`).join(''):esc(t.source||'');
+  const used=parts?[...new Set(parts.map(p=>p.mark).filter(x=>MARKS[x]))]:[];
+  const steps=Array.isArray(t.steps)?t.steps:[];
+  return `<div class="task card">
+    ${t.label?`<div class="label">${esc(t.label)}</div>`:''}
+    ${(t.source||parts)?`<div class="src">${src}</div>`:''}
+    ${used.length?`<div class="leg">${used.map(k=>`<span style="background:${MARKS[k][1]}">${MARKS[k][0]}</span>`).join('')}</div>`:''}
+    ${steps.length?`<div class="sect">Крок за кроком${parts?' · торкнись кроку':''}</div><ol class="steps">${steps.map((s,i)=>`<li><button class="step" data-n="${i+1}"><b>${i+1}</b><span>${esc(s)}</span></button></li>`).join('')}</ol>`:''}
+    ${t.answer?`<div class="ans">${esc(t.answer)}</div>`:''}
+    ${t.why?`<div class="why"><b>Чому так${t.rule?' · '+esc(t.rule):''}</b>${esc(t.why)}</div>`:''}
+  </div>`;
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('.step');if(!b)return;
+  const task=b.closest('.task'),same=b.classList.contains('on');
+  task.querySelectorAll('.step').forEach(x=>x.classList.remove('on'));
+  task.querySelectorAll('.frag').forEach(f=>f.classList.remove('hl'));
+  task.classList.remove('focus');
+  if(!same){b.classList.add('on');task.classList.add('focus');task.querySelectorAll('.frag[data-s="'+b.dataset.n+'"]').forEach(f=>f.classList.add('hl'))}
+});
+function renderLit(l){
+  let h='';
+  if(l.work)h+=`<div class="card" style="margin-top:12px"><div class="label">Твір</div><b>${esc(l.work.title)}</b><div class="hint" style="text-align:left">${esc([l.work.author,l.work.genre].filter(Boolean).join(' · '))}</div></div>`;
+  (l.answers||[]).forEach(a=>{
+    h+=`<div class="card" style="margin-top:12px"><div class="label">${esc(a.question)}</div><div class="ans" style="margin-top:0">${esc(a.answer)}</div>`;
+    (a.arguments||[]).forEach(g=>{h+=`<div class="arg"><b>${esc(g.claim)}</b>${g.evidence?`<q>${esc(g.evidence)}</q>`:''}<small>${esc(g.where||'')} ${g.verify?'<span class="ver">Перевірте за текстом</span>':''}</small></div>`});
+    h+='</div>';
+  });
+  if(l.outline&&l.outline.length)h+=`<div class="card" style="margin-top:12px"><div class="label">План</div><ol style="margin:0;padding-left:22px;font-weight:700;line-height:1.6">${l.outline.map(x=>`<li>${esc(x)}</li>`).join('')}</ol></div>`;
+  if(l.essay)h+=`<div class="card" style="margin-top:12px"><div class="label">Твір</div>${l.essay.title?`<h3 style="margin-bottom:8px">${esc(l.essay.title)}</h3>`:''}${(l.essay.paragraphs||[]).map(p=>`<p style="font-weight:600;line-height:1.55;margin-top:8px">${esc(p)}</p>`).join('')}</div>`;
+  if(l.terms&&l.terms.length)h+=`<div class="card" style="margin-top:12px"><div class="label">Терміни</div>${l.terms.map(t=>`<p style="margin-top:6px;font-weight:600"><b>${esc(t.term)}</b> — ${esc(t.definition)}</p>`).join('')}</div>`;
+  if(l.summary)h+=`<div class="sum">${esc(l.summary)}</div>`;
+  return h;
+}
+function renderItem(it){
+  let h=`<div class="meta" style="margin-top:12px">${esc(it.topic||'')}</div><h2>${esc(it.number||'')}</h2>`;
+  h+=`<span class="tag">${esc(TYPE[it.type]||it.type||'')}</span>`;
+  if(it.confidence==='low')h+=`<span class="tag w">Неточне розпізнавання</span>`;
+  if(it.notes)h+=`<div class="why" style="background:var(--warn)">${esc(it.notes)}</div>`;
+  if(it.original_text)h+=`<div class="sect">Завдання</div><div class="quote">${esc(it.original_text)}</div>`;
+  if(it.exercise){
+    if(it.exercise.instruction)h+=`<p style="margin-top:10px;font-weight:700">${esc(it.exercise.instruction)}</p>`;
+    h+=(it.exercise.tasks||[]).map(renderTask).join('');
+    if(it.exercise.summary)h+=`<div class="sum">${esc(it.exercise.summary)}</div>`;
+  }
+  if(it.literature)h+=renderLit(it.literature);
+  if(Array.isArray(it.basis)&&it.basis.length)h+=`<details><summary>На що спираюсь (${it.basis.length})</summary>${it.basis.map(b=>`<p><b>${esc(KIND[b.kind]||b.kind||'')}${b.title?': '+esc(b.title):''}.</b> ${esc(b.text)}</p>`).join('')}</details>`;
+  h+=`<div class="acts"><button class="btn s" data-ask="simple">Поясни простіше</button><button class="btn o s" data-ask="similar">Дай схожу вправу</button></div><div id="extra" aria-live="polite"></div>`;
+  return h;
+}
+document.addEventListener('click',async e=>{
+  const b=e.target.closest('[data-ask]');if(!b)return;
+  const it=st.result.items[st.idx],ex=$('#extra');
+  ex.style.display='block';ex.textContent='Софі думає…';
+  const base=`Ти — доброзичлива вчителька. Завдання учня: ${it.original_text||''}\nТема: ${it.topic||''}\nГотове розв'язання (JSON): ${JSON.stringify(it.exercise||it.literature||{}).slice(0,3500)}\n`;
+  const ask=b.dataset.ask==='simple'?'Поясни це ще простіше, як для молодшого учня: коротко, з життєвим прикладом, до 150 слів. Українською, без markdown і LaTeX.':'Придумай 2 схожі вправи на ту саму тему для тренування й дай до них короткі відповіді наприкінці. Українською, без markdown і LaTeX.';
+  try{const t=await gem([{text:base+ask+gradeLine()}],false,'extra');ex.innerHTML=t.split(/\n+/).filter(Boolean).map(p=>`<p>${esc(p.replace(/[*#`]/g,''))}</p>`).join('')}
+  catch(er){ex.textContent=errText(er)}
+});
+
+/* ---------- history ---------- */
+st.hf='';
+function histList(){return UL.get('hist',[])}
+function saveHist(list){list=list.slice(0,60);while(!UL.set('hist',list)&&list.length)list=list.slice(0,-1);return list.length}
+function renderHistory(){
+  const all=histList(),names=[...new Set(all.map(x=>x.subject))];
+  if(st.hf&&!names.includes(st.hf))st.hf='';
+  const hc=$('#h-chips');hc.style.display=names.length>1?'flex':'none';
+  hc.innerHTML=['',...names].map(n=>`<button class="chip ${st.hf===n?'on':''}" data-hf="${esc(n)}" aria-pressed="${st.hf===n}">${n?esc(n):'Усі'}</button>`).join('');
+  const h=st.hf?all.filter(x=>x.subject===st.hf):all;
+  $('#h-list').innerHTML=h.length?h.map(x=>`<button class="hrow" data-h="${x.id}"><b>${esc(x.title)}</b><span>${esc(x.subject)} · ${(x.data.items||[]).length} завд. · ${new Date(x.ts).toLocaleString('uk-UA',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</span></button>`).join(''):`<div class="empty">Тут з’являться виконані сторінки.</div>`;
+  $('#b-exp').disabled=!all.length;$('#b-clear').style.display=all.length?'inline-flex':'none';
+}
+document.addEventListener('click',e=>{const f=e.target.closest('[data-hf]');if(f){st.hf=f.dataset.hf;renderHistory();return}
+  const b=e.target.closest('[data-h]');if(!b)return;const x=histList().find(y=>String(y.id)===b.dataset.h);if(x)openHist(x,false)});
+$('#b-clear').onclick=()=>{if(confirm('Очистити всю історію?')){saveHist([]);renderHistory()}};
+$('#b-exp').onclick=()=>{
+  const all=histList();if(!all.length)return;
+  const blob=new Blob([JSON.stringify({app:'domashka-z-sovoyu',v:1,exported:Date.now(),hist:all})],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='domashka-istoriya-'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);toast('Історію вивантажено');
+};
+$('#b-imp').onclick=()=>$('#i-imp').click();
+$('#i-imp').onchange=async e=>{
+  const f=e.target.files[0];e.target.value='';if(!f)return;
+  try{
+    const j=JSON.parse(await f.text()),inc=Array.isArray(j)?j:j.hist;if(!Array.isArray(inc))throw 0;
+    const cur=histList(),ids=new Set(cur.map(x=>String(x.id))),sigs=new Set(cur.map(x=>x.sig).filter(Boolean));let n=0;
+    inc.forEach(x=>{if(x&&x.data&&Array.isArray(x.data.items)&&!ids.has(String(x.id))&&!(x.sig&&sigs.has(x.sig))){
+      cur.push({id:x.id!=null?x.id:Date.now()+n,sig:x.sig,title:String(x.title||'Домашнє завдання'),subject:String(x.subject||'Інше'),ts:+x.ts||Date.now(),data:x.data});
+      ids.add(String(x.id));if(x.sig)sigs.add(x.sig);n++}});
+    cur.sort((a,b)=>b.ts-a.ts);saveHist(cur);renderHistory();toast(n?'Додано записів: '+n:'Нових записів немає');
+  }catch(er){toast('Невірний файл історії')}
+};
+
+/* ---------- profile ---------- */
+(function(){const s=$('#grade');for(let i=1;i<=11;i++)s.insertAdjacentHTML('beforeend',`<option value="${i}">${i} клас</option>`)})();
+function renderProfile(){
+  if(!ME)return;
+  const u=ME.usage,p=pct();
+  $('#p-name').textContent=ME.name||'Користувач';
+  $('#p-mail').textContent=ME.email;
+  const pic=$('#p-pic');if(ME.picture){pic.src=ME.picture;pic.hidden=false}else pic.hidden=true;
+  $('#grade').value=ME.grade==null?'':String(ME.grade);
+  $('#p-bar').className='bar'+(p>=100?' full':p>=80?' warn':'');
+  $('#p-bar').setAttribute('aria-valuenow',p);
+  $('#p-bar i').style.width=p+'%';
+  $('#p-tok').textContent='Використано '+fmt(u.tokens_used)+' з '+fmt(u.tokens_quota)+' токенів ('+p+'%)';
+  $('#p-req').textContent='Виконано сторінок: '+fmt(u.requests_used);
+  const w=$('#p-warn');
+  if(p>=100){w.textContent='Квоту вичерпано. Запити від цього акаунта призупинено, доки ви не оновите підписку. Після оплати квоту буде оновлено.';w.hidden=false}
+  else if(p>=80){w.textContent='Квота майже вичерпана. Незабаром потрібно буде оновити підписку.';w.hidden=false}
+  else w.hidden=true;
+}
+$('#grade').onchange=async e=>{
+  const g=e.target.value?+e.target.value:null;
+  try{setMe(await api('/api/me',{method:'POST',body:{grade:g}}));toast('Клас збережено')}catch(er){toast(errText(er))}
+};
+$('#p-pay').onclick=()=>{
+  if(CONFIG.PAY_URL){window.open(CONFIG.PAY_URL,'_blank','noopener');toast('При оплаті вкажіть e-mail: '+(ME?ME.email:''))}
+  else toast(CONFIG.CONTACT?'Для оплати напишіть: '+CONFIG.CONTACT:'Оплату ще не підключено')
+};
+$('#p-out').onclick=()=>{if(confirm('Вийти з акаунта?'))logout(false)};
+
+/* ---------- старт ---------- */
+(function initGoogle(n=0){
+  if(!CONFIGURED)return;
+  if(!(window.google&&google.accounts&&google.accounts.id)){if(n<100)setTimeout(()=>initGoogle(n+1),150);return}
+  google.accounts.id.initialize({client_id:CONFIG.GOOGLE_CLIENT_ID,callback:onCred,auto_select:false});
+  google.accounts.id.renderButton($('#g-btn'),{theme:'outline',size:'large',shape:'pill',text:'signin_with',locale:'uk',width:280});
+})();
+if(!CONFIGURED){const e=$('#login-err');e.textContent='Сервіс ще не налаштовано: заповніть CONFIG на початку скрипта в index.html (адреса сервера та Google Client ID).';e.hidden=false}
+show(AUTH.token?'home':'login');
+</script>
+</body>
+</html>
